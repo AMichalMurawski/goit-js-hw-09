@@ -12,10 +12,13 @@ function submitPromise(event) {
   const promiseObj = {
     position: 0,
     delay: 0,
+    isLast: false,
   };
+  inputAmount.value > 0 ? btnSubmit.setAttribute('disabled', '') : '';
   for (let i = 0; i < inputAmount.value; i++) {
     promiseObj.position = i + 1;
     promiseObj.delay = +inputDelay.value + inputStep.value * i;
+    promiseObj.isLast = i === +inputAmount.value - 1 ? true : false;
     createPromise(promiseObj)
       .then(resolve => {
         Notify.success(resolve, {
@@ -30,7 +33,7 @@ function submitPromise(event) {
   }
 }
 
-function createPromise({ position, delay }) {
+function createPromise({ position, delay, isLast }) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const shouldResolve = Math.random() > 0.3;
@@ -39,6 +42,7 @@ function createPromise({ position, delay }) {
       } else {
         reject(`❌ Rejected promise ${position} in ${delay}ms`);
       }
+      isLast === true ? btnSubmit.removeAttribute('disabled', '') : '';
     }, delay);
   });
 }
